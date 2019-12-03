@@ -9,3 +9,7 @@ const a = require('@nexys/http')
 
 console.log(a)
 ```
+
+## Resources
+
+* https://stackify.com/node-js-error-handling/
