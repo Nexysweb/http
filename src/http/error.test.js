@@ -1,42 +1,48 @@
 import HTTPError from './error';
-import { isError } from './error';
 
-const message = 'something went wrong';
-const statusCode = 500;
-const myHTTPError = new HTTPError(message, statusCode);
-
-test('check if input is an error', () => {
-  class ARandomClass {};
-  const myRandomClass = new ARandomClass;
-
-  // typof always returns `object`
-  // console.log(typeof e)
-
-  expect(myHTTPError instanceof HTTPError).toEqual(true);
-  expect('mystring' instanceof HTTPError).toEqual(false);
-  expect(myRandomClass instanceof HTTPError).toEqual(false);
-
-  // deprecated
-  expect(isError(myHTTPError)).toEqual(true);
-  expect(isError(myRandomClass)).toEqual(false);
-  expect(isError('myString')).toEqual(false);
-
-  console.log(myHTTPError.message)
-});
-
-test('iserror attribute works', ()=> {
-  expect(myHTTPError.isError).toEqual(true);
-})
-
-test('attributes are being saved', () => {
-  expect(myHTTPError.message).toEqual(message);
-  expect(myHTTPError.statusCode).toEqual(statusCode);
-});
 
 test('default atttributes', () => {
-  const defaultHTTPError = new HTTPError();
-  expect(defaultHTTPError.message).toEqual(null);
-  expect(defaultHTTPError.statusCode).toEqual(400);
+  const defaultError = new HTTPError();
+  expect(defaultError.status).toEqual(400);
+  expect(defaultError.body).toEqual(null);
+
+  expect(defaultError.message).toEqual('400, null');
 });
 
+test('custom attributes', () => {
+  const body = { message: 'this page could not be found'};
+  const error = new HTTPError(body, 404);
+  expect(error.status).toEqual(404);
+  expect(error.body).toEqual(body);
 
+  expect(error.message).toEqual(`404, {message:this page could not be found}`);
+});
+
+test('error class type check', () => {
+  class ARandomClass {};
+  const myRandomClass = new ARandomClass;
+  const myError = new HTTPError();
+
+  expect(myError instanceof Error).toEqual(true);
+  expect(myError instanceof HTTPError).toEqual(true);
+  expect('mystring' instanceof HTTPError).toEqual(false);
+  expect(myRandomClass instanceof HTTPError).toEqual(false);
+});
+
+test('throw default error', () => {
+  try {
+    throw new HTTPError();
+  } catch (err) {
+    expect(err.status).toEqual(400);
+    expect(err.message).toEqual('400, null');
+  }
+});
+
+test('throw 500 error', () => {
+  try {
+    throw new HTTPError('some internal server error', 500);
+  } catch (err) {
+    expect(err.status).toEqual(500);
+    expect(err.message).toEqual('500, some internal server error');
+  }
+});

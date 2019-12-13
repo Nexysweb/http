@@ -1,3 +1,6 @@
+import HTTPResponse from './response';
+
+// TODO: export success_codes [{code, description}]
 const SUCCESS_CODES = [200, 201, 202, 203, 204];
 
 /*
@@ -10,13 +13,15 @@ const SUCCESS_CODES = [200, 201, 202, 203, 204];
   - No Response 204
 */
 
-export default class HTTPSuccess {
-  constructor(body=null, status=200) {
+export default class HTTPSuccess extends HTTPResponse {
+  constructor(body=null, headers={}, status=200) {
+    super(status, body, headers);
+
     if (!SUCCESS_CODES.includes(status)) {
       throw new Error('HTTPSuccess requires a success code');
     }
-
-    this.body = body;
-    this.status = status;
   }
+
+  // TODO: add helper methods for setting specific headers?
+  // attachment = (ctx, filename, ending) => ctx.response.attachment(filename + ending)
 };
