@@ -6,7 +6,7 @@ test('default atttributes', () => {
   expect(defaultError.status).toEqual(400);
   expect(defaultError.body).toEqual(null);
 
-  expect(defaultError.message).toEqual('400, null');
+  expect(defaultError.message).toEqual('400, Bad Request');
 });
 
 test('custom attributes', () => {
@@ -15,7 +15,7 @@ test('custom attributes', () => {
   expect(error.status).toEqual(404);
   expect(error.body).toEqual(body);
 
-  expect(error.message).toEqual(`404, ${JSON.stringify(body, null, 2).replace(/\"/g, '')}`);
+  expect(error.message).toEqual(`404, Not found: ${JSON.stringify(body, null, 2).replace(/\"/g, '')}`);
 });
 
 test('error class type check', () => {
@@ -34,7 +34,7 @@ test('throw default error', () => {
     throw new HTTPError();
   } catch (err) {
     expect(err.status).toEqual(400);
-    expect(err.message).toEqual('400, null');
+    expect(err.message).toEqual('400, Bad Request');
   }
 });
 
@@ -43,6 +43,6 @@ test('throw 500 error', () => {
     throw new HTTPError('some internal server error', 500);
   } catch (err) {
     expect(err.status).toEqual(500);
-    expect(err.message).toEqual('500, some internal server error');
+    expect(err.message).toEqual('500, Internal Server Error: some internal server error');
   }
 });
