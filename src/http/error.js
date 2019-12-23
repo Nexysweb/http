@@ -1,5 +1,5 @@
 // TODO: default message body depending on status
-const createErrorMessage = (status, body) => `${status}, ${JSON.stringify(body).replace(/\"/g, '')}`;
+const createErrorMessage = (status, body) => `${status}, ${JSON.stringify(body, null, 2).replace(/\"/g, '')}`;
 
 /*
   const ERROR_CODES = ..
