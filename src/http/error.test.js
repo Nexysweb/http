@@ -15,7 +15,7 @@ test('custom attributes', () => {
   expect(error.status).toEqual(404);
   expect(error.body).toEqual(body);
 
-  expect(error.message).toEqual(`404, Not found: ${JSON.stringify(body, null, 2).replace(/\"/g, '')}`);
+  expect(error.message).toEqual(`404, Not Found: ${JSON.stringify(body, null, 2).replace(/\"/g, '')}`);
 });
 
 test('error class type check', () => {

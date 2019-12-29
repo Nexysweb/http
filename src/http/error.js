@@ -1,23 +1,28 @@
+const CLIENT_CODES = {
+  400: 'Bad Request',
+  401: 'Unauthorized',
+  403: 'Forbidden',
+  404: 'Not Found',
+  405: 'Method Not Allowed',
+  408: 'Request Timeout',
+  414: 'Request Entity Too Large'
+};
+
+const SERVER_CODES = {
+  500: 'Internal Server Error',
+  501: 'Not Implemented',
+  502: 'Bad Gateway',
+  503: 'Service Unavailable',
+  504: 'Gateway Timeout'
+};
+
+const ALL_CODES = {
+  ...CLIENT_CODES,
+  ...SERVER_CODES
+};
+
 // TODO: default message body depending on status
-const createErrorMessage = (status, body) => {
-  let message = null;
-  switch (status) {
-    case 400:
-      message = 'Bad Request';
-      break;
-    case 401:
-      message = 'Unauthorized';
-      break;
-    case 403:
-      message = 'Forbidden';
-      break;
-    case 404:
-      message = 'Not found';
-      break;
-    case 500:
-      message = 'Internal Server Error';
-  }
-  
+const createMessage = (status, message, body) => {
   const identifier = message ? `${status}, ${message}` : `${status}`;
 
   if (body) {
@@ -28,36 +33,42 @@ const createErrorMessage = (status, body) => {
   }
 }
 
-/*
-  const ERROR_CODES = ..
-
-  - 400 Bad Request: The server cannot or will not process the request due to an apparent client error (e.g., malformed request syntax, size too large, invalid request message framing, or deceptive request routing).[32]
-  - 401 Unauthorized (RFC 7235): Similar to 403 Forbidden, but specifically for use when authentication is required and has failed or has not yet been provided. The response must include a WWW-Authenticate header field containing a challenge applicable to the requested resource. See Basic access authentication and Digest access authentication.[33] 401 semantically means "unauthorised",[34] the user does not have valid authentication credentials for the target resource.
-    Note: Some sites incorrectly issue HTTP 401 when an IP address is banned from the website (usually the website domain) and that specific address is refused permission to access a website.[citation needed]
-  - 403 Forbidden: The request contained valid data and was understood by the server, but the server is refusing action. This may be due to the user not having the necessary permissions for a resource or needing an account of some sort, or attempting a prohibited action (e.g. creating a duplicate record where only one is allowed). This code is also typically used if the request provided authentication via the WWW-Authenticate header field, but the server did not accept that authentication. The request should not be repeated.
-  - 404 Not Found: The requested resource could not be found but may be available in the future. Subsequent requests by the client are permissible.
-*/
-
 /**
  * HTTP error class
- */
+ **/
 export default class HTTPError extends Error {
   constructor(body=null, status=400) {
-    super(createErrorMessage(status, body));
+    const message = ALL_CODES.hasOwnProperty(status) && ALL_CODES[status];
+    super(createMessage(status, message, body));
 
     this.name = 'HTTPError';
     this.error = true;
 
-    this.body = body
+    this.body = body;
     this.status = status;
+    this.statusMessage = message;
+
+    this.expose = status < 500;
 
     // DEPRECATED
     this.statusCode = this.status;
     this.isError = this.error;
   }
 
+  codes() {
+    return Object.keys(ALL_CODES).map(status => Number(status));
+  }
+
+  clientCodes() {
+    return Object.keys(CLIENT_CODES).map(status => Number(status));
+  }
+
+  serverCodes() {
+    return Object.keys(SERVER_CODES).map(status => Number(status));
+  }
+
   toString() {
-    return createErrorMessage(this.status, this.body);
+    return createMessage(this.status, this.statusMessage, this.body);
   }
 };
 
