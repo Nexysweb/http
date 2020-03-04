@@ -1,4 +1,4 @@
-const CLIENT_CODES = {
+const CLIENT_CODES:{[code:number]:string} = {
   400: 'Bad Request',
   401: 'Unauthorized',
   403: 'Forbidden',
@@ -8,7 +8,7 @@ const CLIENT_CODES = {
   414: 'Request Entity Too Large'
 };
 
-const SERVER_CODES = {
+const SERVER_CODES:{[code:number]:string} = {
   500: 'Internal Server Error',
   501: 'Not Implemented',
   502: 'Bad Gateway',
@@ -16,13 +16,13 @@ const SERVER_CODES = {
   504: 'Gateway Timeout'
 };
 
-const ALL_CODES = {
+const ALL_CODES:{[code:number]:string} = {
   ...CLIENT_CODES,
   ...SERVER_CODES
 };
 
 // TODO: default message body depending on status
-const createMessage = (status, message, body) => {
+const createMessage = (status:number, message:string, body:any) => {
   const identifier = message ? `${status}, ${message}` : `${status}`;
 
   if (body) {
@@ -37,8 +37,17 @@ const createMessage = (status, message, body) => {
  * HTTP error class
  **/
 export default class HTTPError extends Error {
-  constructor(body=null, status=400) {
-    const message = ALL_CODES.hasOwnProperty(status) && ALL_CODES[status];
+  error:boolean;
+  body:any;
+  status:number;
+  statusMessage:string;
+  expose:boolean;
+  // deprecated
+  statusCode:number;
+  isError:boolean;
+
+  constructor(body:any=null, status:number=400) {
+    const message:string = ALL_CODES[status];//;ALL_CODES.hasOwnProperty(status) && ALL_CODES[status];
     super(createMessage(status, message, body));
 
     this.name = 'HTTPError';
@@ -73,4 +82,4 @@ export default class HTTPError extends Error {
 };
 
 // DEPRECATED
-export const isError = e => e instanceof Error && e instanceof HTTPError;
+export const isError = (e:any):boolean => e instanceof Error && e instanceof HTTPError;

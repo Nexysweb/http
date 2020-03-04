@@ -9,7 +9,7 @@ const CODES = {
 };
 
 export default class HTTPSuccess extends HTTPResponse {
-  constructor(body=null, headers={}, status=200) {
+  constructor(body:any=null, headers:any={}, status:number=200) {
     // TODO: use arguments
     super(status, body, headers);
 

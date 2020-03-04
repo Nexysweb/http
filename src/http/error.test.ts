@@ -23,9 +23,11 @@ test('error class type check', () => {
   const myRandomClass = new ARandomClass;
   const myError = new HTTPError();
 
+  const attribute:any = 'mystring'
+
   expect(myError instanceof Error).toEqual(true);
   expect(myError instanceof HTTPError).toEqual(true);
-  expect('mystring' instanceof HTTPError).toEqual(false);
+  expect(attribute instanceof HTTPError).toEqual(false);
   expect(myRandomClass instanceof HTTPError).toEqual(false);
 });
 

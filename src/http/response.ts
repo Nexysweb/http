@@ -1,5 +1,9 @@
 export default class HTTPResponse {
-  constructor(status, body, headers) {
+  status:number;
+  body:any;
+  headers:any;
+
+  constructor(status:number, body:any, headers:any) {
     this.status = status;
     this.body = body;
     this.headers = headers;
