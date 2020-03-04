@@ -47,7 +47,7 @@ export default class HTTPError extends Error {
   isError:boolean;
 
   constructor(body:any=null, status:number=400) {
-    const message:string = ALL_CODES[status];//;ALL_CODES.hasOwnProperty(status) && ALL_CODES[status];
+    const message:string = ALL_CODES.hasOwnProperty(status) ? ALL_CODES[status] : 'status not found';
     super(createMessage(status, message, body));
 
     this.name = 'HTTPError';
